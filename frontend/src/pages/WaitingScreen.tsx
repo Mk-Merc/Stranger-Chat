@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button } from '@/components/ui/button';
 
 export const WaitingScreen = ({ onCancel }: { onCancel: () => void }) => {
