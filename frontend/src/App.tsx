@@ -18,7 +18,8 @@ export default function App() {
     chatEndedMessage, 
     cancelSearch,
     sendMessage,
-    clearChatEndedMessage
+    clearChatEndedMessage,
+    blockStranger
   } = useSocket();
 
   if (!fontsLoaded) return null;
@@ -34,6 +35,7 @@ export default function App() {
           messages={messages} 
           onSendMessage={sendMessage} 
           onLeave={disconnect} 
+          onBlock={blockStranger}
         />
       )}
 

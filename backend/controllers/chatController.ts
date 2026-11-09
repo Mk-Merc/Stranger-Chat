@@ -1,4 +1,8 @@
 import { Server, Socket } from 'socket.io';
+import Block from '../models/blockModel';
+import { Filter } from 'bad-words';
+
+const profanityFilter = new Filter();
 
 // Extends the base Socket type to include a custom application data
 // deviceID: The permanent UUID stored on the user's phone
@@ -65,8 +69,8 @@ const startRoomTimer = (io: Server, roomID: string, socket: CustomSocket) => {
 
 export const handleSocketConnection = (io: Server, socket: CustomSocket) => {
   console.log(`[SOCKET CONNECT] Socket: ${socket.id}`);
-
-  socket.on('find_stranger', (data: { deviceID: string }) => {
+  
+  socket.on('find_stranger', async (data: { deviceID: string }) => {
     socket.deviceID = data.deviceID;
     
     // Clean previous queue entries for this device
@@ -82,6 +86,17 @@ export const handleSocketConnection = (io: Server, socket: CustomSocket) => {
         
         // Skip ghosts (users already in a room, but still in the queue for some reason)
         if (user.socket.roomID) continue;
+
+        // Check database for a block before matching
+        const blockExists = await Block.findOne({
+          $or: [
+            { blockerID: user.deviceID, blockedID: socket.deviceID },
+            { blockerID: socket.deviceID, blockedID: user.deviceID }
+          ]
+        });
+
+        // If they blocked each other, skip them
+        if (blockExists) continue;
 
         matchedUser = user;
  
@@ -120,7 +135,9 @@ export const handleSocketConnection = (io: Server, socket: CustomSocket) => {
 
   socket.on('send_message', (data: { message: string }) => {
     if (socket.roomID) {
-      socket.to(socket.roomID).emit('receive_message', { message: data.message });
+      const cleanMessage = profanityFilter.clean(data.message);
+
+      socket.to(socket.roomID).emit('receive_message', { message: cleanMessage });
       
       startRoomTimer(io, socket.roomID, socket);
     }
@@ -137,6 +154,23 @@ export const handleSocketConnection = (io: Server, socket: CustomSocket) => {
   socket.on('leave_chat', () => {
     if (socket.roomID) {
       endChatForRoom(io, socket.roomID, socket, "You left the chat.", "Stranger left the chat.");
+    }
+  });
+
+  socket.on('block_user', async (data: { blockedDeviceID: string }) => {
+    if (socket.roomID) {
+      try {
+        await Block.create({
+          blockerID: socket.deviceID!,
+          blockedID: data.blockedDeviceID
+        });
+
+        console.log(`[BLOCK] Device ${socket.deviceID} blocked Device ${data.blockedDeviceID}`);
+
+        endChatForRoom(io, socket.roomID, socket, "You blocked the stranger.", "Stranger blocked you.");
+      } catch (err) {
+        console.error("Error blocking user:", err);
+      }
     }
   });
 

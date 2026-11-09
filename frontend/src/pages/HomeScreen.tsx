@@ -9,7 +9,7 @@ export const HomeScreen = ({ onFind }: { onFind: () => void }) => {
         <Text style={styles.subtitle}>Talk to random people anonymously.</Text>
       </View>
       <View style={styles.middleSection}>
-        <Button size="lg" onPress={onFind} style={styles.button}>
+        <Button size="lg" onPress={onFind} style={styles.button} labelStyle={styles.buttonLabel}>
           Find Stranger
         </Button>
       </View>
@@ -56,5 +56,9 @@ const styles = StyleSheet.create({
     borderRadius: 30, 
     justifyContent: 'center', 
     alignItems: 'center' 
+  },
+  buttonLabel: {
+    lineHeight: 26,
+    includeFontPadding: false
   }
 });

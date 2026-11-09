@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
+import { Filter } from 'bad-words';
+
+const profanityFilter = new Filter();
 
 const SOCKET_URL = process.env.EXPO_PUBLIC_API_URL; 
 
@@ -94,15 +97,23 @@ export const useSocket = () => {
 
   const sendMessage = (text: string) => {
     if (socket && text.trim() !== '') {
-      socket.emit('send_message', { message: text });
+      const cleanText = profanityFilter.clean(text);
+
+      socket.emit('send_message', { message: cleanText });
 
       setMessages((previousMessages) => [...previousMessages, { 
         id: Date.now().toString(), 
-        text, 
+        text: cleanText, 
         sender: 'ME',
         time: new Date().toISOString()
       }]);
     }
+  };
+
+  const blockStranger = () => {
+  if (socket && strangerDeviceID) {
+    socket.emit('block_user', { blockedDeviceID: strangerDeviceID });
+  }
   };
   
   const disconnect = () => {
@@ -124,6 +135,7 @@ export const useSocket = () => {
     chatEndedMessage, 
     cancelSearch,
     sendMessage, 
-    clearChatEndedMessage
+    clearChatEndedMessage,
+    blockStranger
   };
 };

@@ -7,9 +7,10 @@ interface ChatScreenProps {
   messages: { id: string, text: string, sender: 'ME' | 'STRANGER' }[];
   onSendMessage: (text: string) => void;
   onLeave: () => void;
+  onBlock: () => void;
 }
 
-export const ChatScreen = ({ messages, onSendMessage, onLeave }: ChatScreenProps) => {
+export const ChatScreen = ({ messages, onSendMessage, onLeave, onBlock }: ChatScreenProps) => {
   const [inputText, setInputText] = useState('');
 
   const handleSend = () => {
@@ -25,9 +26,14 @@ export const ChatScreen = ({ messages, onSendMessage, onLeave }: ChatScreenProps
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Stranger</Text>
-        <Button tone="danger" appearance="ghost" size="sm" onPress={onLeave}>
-          Leave
-        </Button>
+        <View style={styles.headerButtons}>
+          <Button tone="danger" appearance="ghost" size="sm" onPress={onBlock}>
+            Block
+          </Button>
+          <Button tone="danger" appearance="ghost" size="sm" onPress={onLeave}>
+            Leave
+          </Button>
+        </View>
       </View>
 
       {/* Messages */}
@@ -87,6 +93,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000000',
     fontFamily: 'Manrope'
+  },
+  headerButtons: { 
+    flexDirection: 'row', 
+    gap: 10 
   },
   messagesContainer: { 
     flex: 1, 
