@@ -30,12 +30,12 @@ const io = new Server(server, { cors: { origin: "*", methods: ["GET", "POST"] } 
 io.on('connection', (socket) => handleSocketConnection(io, socket));
 
 mongoose.connect(process.env.MONGO_URI as string)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(error => console.error('MongoDB Connection Error:', error));
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(error => console.error('MongoDB Connection Error:', error));
 
 const PORT = process.env.PORT;
 
 // Start the server and listen on the specified port
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
