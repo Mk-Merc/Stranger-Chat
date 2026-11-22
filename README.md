@@ -141,7 +141,7 @@ Note: For a standalone APK, the Expo frontend development-server tunnel is not r
 * [React Native Async Storage](https://www.npmjs.com/package/@react-native-async-storage/async-storage) - Local Data Storage
 * [Expo Crypto](https://docs.expo.dev/versions/latest/sdk/crypto/) - Cryptographic Utilities
 * [ArloUI](https://arloui.com/) - UI Components
-* [React Native SVG](https://github.com/software-mansion/react-native-svg) - Scalable vector graphics rendering
+* [React Native SVG](https://github.com/software-mansion/react-native-svg) - Scalable Vector Graphics Rendering
 * [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) - Animations
 * [bad-words](https://www.npmjs.com/package/bad-words) - Profanity Filtering
 
