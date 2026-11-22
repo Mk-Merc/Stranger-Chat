@@ -28,24 +28,20 @@ cd backend
 npm install
 ```
 
-3. Configure the backend environment variables
-
-Create a .env file and provide the required MongoDB connection string
-
-4. Start the backend server
+3. Start the backend server
 
 ```
 npm run dev
 ```
 
-5. Setup the frontend
+4. Setup the frontend
 
 ```
 cd frontend
 npm install
 ```
 
-6. Start the frontend
+5. Start the frontend
 
 ```
 npx expo start
